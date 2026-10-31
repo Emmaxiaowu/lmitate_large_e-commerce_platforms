@@ -1,6 +1,7 @@
 package com.controller;
 
-import com.entity.User;
+import com.dto.request.UserLoginRequest;
+import com.dto.request.UserRegisterRequest;
 import com.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-        public String register(@RequestBody User user){
-        userService.register(user);
+        public String register(@RequestBody UserRegisterRequest request ){
+        userService.register(request);
         return "注册成功！";
     }
 
-    @GetMapping("/login")
-    public String login(@RequestBody User user){
-        userService.login(user);
+    @PostMapping("/login")
+    public String login(@RequestBody UserLoginRequest request){
+        userService.login(request);
         return "登录成功！";
     }
 }

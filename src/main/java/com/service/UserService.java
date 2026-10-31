@@ -1,5 +1,7 @@
 package com.service;
 
+import com.dto.request.UserLoginRequest;
+import com.dto.request.UserRegisterRequest;
 import com.entity.User;
 import com.exception.BusinessException;
 import com.mapper.UserMapper;
@@ -16,41 +18,50 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(User user){
+    public void register(UserRegisterRequest request){
 
-        if (user == null || user.getAccount() == null || user.getPassword() == null || user.getUsername() == null){
+        User user = new User();
+
+        if (request == null || request.getAccount() == null || request.getPassword() == null || request.getUsername() == null){
             throw new BusinessException("201","账号、密码、用户名不能为空！");
         }
         //isBlank判断字符串是否为空，或者只包含空白字符串
-        if (user.getAccount().isBlank() || user.getPassword().isBlank() || user.getUsername().isBlank()){
+        if (request.getAccount().isBlank() || request.getPassword().isBlank() || request.getUsername().isBlank()){
             throw new BusinessException("201","账号、密码、用户名不能为空！");
         }
-        User hasExist = userMapper.findByAccount(user.getAccount());
+        User hasExist = userMapper.findByAccount(request.getAccount());
         if (hasExist != null){
             throw new BusinessException("201","账号已存在！");
         }
-        String encode = passwordEncoder.encode(user.getPassword());
+        user.setAccount(request.getAccount());
+        String encode = passwordEncoder.encode(request.getPassword());
         user.setPassword(encode);
+        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
         int rows = userMapper.register(user);
         if (rows != 1){
             throw new BusinessException("201","注册失败！");
         }
     }
 
-    public User login(User user){
+    public User login(UserLoginRequest request){
 
-        if (user == null || user.getAccount() == null || user.getPassword() == null){
+        User user = new User();
+
+        if (request == null || request.getAccount() == null || request.getPassword() == null){
             throw new BusinessException("202","账号、密码不能为空！");
         }
-        if (user.getAccount().isBlank() || user.getPassword().isBlank()){
+        if (request.getAccount().isBlank() || request.getPassword().isBlank()){
             throw new BusinessException("202","账号、密码不能为空！");
         }
-        User user2 = userMapper.findByAccount(user.getAccount());
-        if (user2 == null){
+        User request2 = userMapper.findByAccount(request.getAccount());
+        if (request2 == null){
             throw new BusinessException("202","账号不存在！请先注册！");
         }
-        if (user2.getAccount().equals(user.getAccount()) && passwordEncoder.matches(user.getPassword(),user2.getPassword())){
-            int userId = user.getUserId();
+        if (request2.getAccount().equals(request.getAccount()) && passwordEncoder.matches(request.getPassword(),request2.getPassword())){
+            user.setAccount(request2.getAccount());
+            user.setPassword(request2.getPassword());
+            System.out.println("登录成功！");
         }else {
             throw new BusinessException("202","账号或密码错误！");
         }

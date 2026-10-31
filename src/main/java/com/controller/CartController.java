@@ -16,9 +16,9 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/add/{productId}")
-    public String addToCart(@PathVariable("productId") int productId){
-        cartService.addToCart(productId);
-        return "添加成功！";
-    }
+//    @PostMapping("/add/{productId}")
+//    public String addToCart(@PathVariable("productId") int productId){
+//        cartService.addToCart(productId);
+//        return "添加成功！";
+//    }
 }

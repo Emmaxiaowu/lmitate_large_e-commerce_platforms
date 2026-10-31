@@ -12,4 +12,6 @@ public interface ProductMapper {
             "select * from product where productName = #{name}"
     )
     public Product findByName(String name);
+
+
 }
