@@ -1,13 +1,13 @@
 package com.controller;
 
 
+import com.dto.request.PageResult;
+import com.dto.request.UserLoginRequest;
 import com.entity.Product;
-import com.exception.ErrorResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.service.ProductService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -20,12 +20,18 @@ public class ProductController {
     }
 
     @GetMapping("/name/{name}")
-    public Product findByName(@PathVariable String name){
-        return productService.findByName(name);
+    public List<Product> findByName(@RequestBody UserLoginRequest request, @PathVariable String name){
+        return productService.findByName(request,name);
     }
 
-    @GetMapping("/error/test")
-    public String test(){
-        throw new RuntimeException("这是一次异常测试！");
+   @GetMapping("/id/{id}")
+    public Product findById(@PathVariable Integer id){
+        return productService.findById(id);
+    }
+
+    //需要获取第几页和页数
+    @GetMapping("/page")
+    public PageResult<Product> findByPage(@RequestParam Integer page, @RequestParam Integer pageSize){
+        return productService.findByPage(page,pageSize);
     }
 }
