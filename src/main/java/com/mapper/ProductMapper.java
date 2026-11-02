@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-    //根据名字查询商品
+    //根据名字查询商品，模糊搜索
     @Select(
             "select * from product where productName like concat('%',#{name},'%')"
     )
@@ -24,15 +24,15 @@ public interface ProductMapper {
 
     //查询所有商品的数量
     @Select(
-            "select count(*) from product"
+            "select count(*) from product where productName like concat('%',#{Name},'%')"
     )
-    public int count();
+    public int count(String name);
 
-    //查询某页的商品
+    //查询某页的商品，并且进行模糊匹配
     @Select(
-            "select * from product order by productId ASC limit #{pageSize} offset #{skip}"
+            "select * from product where productName like concat('%',#{name},'%') order by productId ASC limit #{pageSize} offset #{skip}"
     )
-    public List<Product> findByPage(Integer skip,Integer pageSize);
+    public List<Product> findByPageAndName(String name,Integer skip,Integer pageSize);
 
 
 

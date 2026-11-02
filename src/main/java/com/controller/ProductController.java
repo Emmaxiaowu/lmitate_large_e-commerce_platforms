@@ -30,8 +30,8 @@ public class ProductController {
     }
 
     //需要获取第几页和页数
-    @GetMapping("/page")
-    public PageResult<Product> findByPage(@RequestParam Integer page, @RequestParam Integer pageSize){
-        return productService.findByPage(page,pageSize);
+    @GetMapping("/page/name/{name}")
+    public PageResult<Product> findByPageAndName(@RequestBody UserLoginRequest request,@PathVariable String name,@RequestParam Integer page, @RequestParam Integer pageSize){
+        return productService.findByPageAndName(request,name,page,pageSize);
     }
 }

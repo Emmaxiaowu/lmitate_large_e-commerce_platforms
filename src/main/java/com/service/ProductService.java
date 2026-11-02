@@ -24,16 +24,10 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    //根据商品名查询商品
+    //根据商品名查询商品，模糊搜索
     public List<Product> findByName(UserLoginRequest request,String name){
 
-        User user = userMapper.findByAccount(request.getAccount());
-        if (user == null){
-            throw new BusinessException("404","请先登录！");
-        }
-        if (name == null || name.trim().length() == 0){
-            throw new BusinessException("404","商品名字不能为空！");
-        }
+
         return productMapper.findByName(name);
     }
 
@@ -51,7 +45,15 @@ public class ProductService {
     }
 
     //分页查询商品
-    public PageResult<Product> findByPage(Integer page, Integer pageSize){
+    public PageResult<Product> findByPageAndName(UserLoginRequest request,String name,Integer page, Integer pageSize){
+
+        User user = userMapper.findByAccount(request.getAccount());
+        if (user == null){
+            throw new BusinessException("404","请先登录！");
+        }
+        if (name == null || name.trim().length() == 0){
+            throw new BusinessException("404","商品名字不能为空！");
+        }
         //对传过来的页码进行判断和计算
         if(page == null || page < 1){
             throw new BusinessException("404","页码不能为空！");
@@ -61,10 +63,12 @@ public class ProductService {
         }else if (pageSize > 100){
             throw new BusinessException("404","页码大小不能超过100！");
         }
+
+        //获取了名字输入后的商品名,此时我需要将商品进行输出，其他商品不需要展示
         PageResult<Product> pageResult = new PageResult<>();
         int skip = (page - 1) * pageSize;
-        pageResult.setRecords(productMapper.findByPage(skip,pageSize));
-        pageResult.setCount(productMapper.count());
+        pageResult.setRecords(productMapper.findByPageAndName(name,skip,pageSize));
+        pageResult.setCount(productMapper.count(name));
         pageResult.setPage(page);
         pageResult.setPageSize(pageSize);
         return pageResult;
